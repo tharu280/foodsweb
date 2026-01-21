@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { FoodItem } from '@prisma/client'
-import { addFood, updateFood, deleteFood, toggleAvailability, logout } from '@/app/actions'
-import { Trash2, Edit, Plus, LogOut } from 'lucide-react'
+import { addFood, updateFood, deleteFood, toggleAvailability, logout, seedDatabase } from '@/app/actions'
+import { Trash2, Edit, Plus, LogOut, RotateCcw } from 'lucide-react'
 
 export function AdminDashboard({ foods }: { foods: FoodItem[] }) {
     const [editingId, setEditingId] = useState<number | null>(null)
@@ -13,12 +13,20 @@ export function AdminDashboard({ foods }: { foods: FoodItem[] }) {
             <div className="max-w-6xl mx-auto">
                 <div className="flex justify-between items-center mb-8">
                     <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-                    <form action={logout}>
-                        <button className="flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold">
-                            <LogOut size={20} />
-                            Logout
-                        </button>
-                    </form>
+                    <div className="flex items-center gap-6">
+                        <form action={seedDatabase}>
+                            <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-semibold" title="Reset all food items to default">
+                                <RotateCcw size={20} />
+                                Reset Defaults
+                            </button>
+                        </form>
+                        <form action={logout}>
+                            <button className="flex items-center gap-2 text-red-600 hover:text-red-700 font-semibold">
+                                <LogOut size={20} />
+                                Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
                 {/* Add New Item Form */}
