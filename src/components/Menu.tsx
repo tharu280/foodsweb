@@ -221,7 +221,7 @@ export function Menu({ initialFoods }: MenuProps) {
                         </p>
 
                         <a
-                            href="https://intelligenai.com"
+                            href="https://tharushika-portfolio.vercel.app"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="group relative flex items-center gap-4 px-7 py-3 rounded-full border border-white/5 bg-white/[0.02] hover:border-amber-500/30 transition-all duration-500 overflow-hidden"
