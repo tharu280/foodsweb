@@ -83,7 +83,7 @@ export function Menu({ initialFoods }: MenuProps) {
                     <div className="flex items-center gap-8">
                         <div className="hidden md:flex items-center gap-2 text-[10px] font-bold tracking-[0.2em] text-white/40">
                             <Phone size={14} className="text-amber-500" />
-                            <span>Inquiries: +94 77 123 4567</span>
+                            <span>Inquiries: {siteConfig.contact.phone}</span>
                         </div>
                         <button className="relative group">
                             <ShoppingBag className="text-white/60 group-hover:text-amber-500 transition-colors" size={20} />

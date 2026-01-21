@@ -3,8 +3,8 @@ export const siteConfig = {
     description: "Authentic Sri Lankan sweets and meals delivered to your doorstep",
     currency: "LKR",
     contact: {
-        phone: "+94 77 123 4567",
-        whatsapp: "94771234567", // No spaces or + for API links
+        phone: "+94 76 557 5355",
+        whatsapp: "94765575355", // No spaces or + for API links
         address: "Colombo, Sri Lanka",
     },
     socials: {
