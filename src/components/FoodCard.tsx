@@ -1,6 +1,8 @@
+import { useRef } from 'react'
 import Image from 'next/image'
 import { Plus, Info, ImageOff } from 'lucide-react'
 import { FoodItem } from '@prisma/client'
+import { motion, useScroll, useTransform } from 'framer-motion'
 
 interface FoodCardProps {
     food: FoodItem
@@ -8,15 +10,42 @@ interface FoodCardProps {
 }
 
 export function FoodCard({ food, onAdd }: FoodCardProps) {
+    const cardRef = useRef(null)
+    const { scrollYProgress } = useScroll({
+        target: cardRef,
+        offset: ["start end", "end start"]
+    })
+
+    const yDrift = useTransform(scrollYProgress, [0, 1], [0, -30])
+    const imageY = useTransform(scrollYProgress, [0, 1], [10, -10])
+    const badgeY = useTransform(scrollYProgress, [0, 1], [5, -5])
+
     return (
-        <div className="group relative bg-neutral-900/40 rounded-2xl p-6 transition-all duration-500 hover:bg-neutral-800/60 border border-white/5 hover:border-amber-500/30 flex flex-col items-center text-center overflow-hidden h-full">
-            {/* Availability Overlay */}
+        <motion.div
+            ref={cardRef}
+            style={{ y: yDrift }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-10%" }}
+            transition={{
+                duration: 0.8,
+                ease: [0.16, 1, 0.3, 1], // Custom cubic-bezier for elegance
+                scale: { type: "spring", damping: 20, stiffness: 100 }
+            }}
+            className="group relative bg-neutral-900/40 rounded-2xl p-6 transition-colors duration-500 border border-white/5 flex flex-col items-center text-center overflow-hidden h-full shadow-lg hover:bg-neutral-800/60 hover:border-amber-500/30"
+        >
+            {/* Availability Badge */}
             {!food.isAvailable && (
-                <div className="absolute inset-0 z-20 bg-black/70 backdrop-blur-[2px] flex items-center justify-center p-4">
-                    <span className="text-white/60 font-medium uppercase tracking-[0.2em] text-xs px-4 py-2 border border-white/10 rounded-full">
-                        Fresh Batch Coming Soon
-                    </span>
-                </div>
+                <motion.div
+                    style={{ y: badgeY }}
+                    className="absolute top-4 right-4 z-20"
+                >
+                    <div className="bg-black/70 backdrop-blur-[2px] flex items-center justify-center p-2 rounded-full">
+                        <span className="text-white/60 font-medium uppercase tracking-[0.2em] text-[10px] px-2 py-1">
+                            Coming Soon
+                        </span>
+                    </div>
+                </motion.div>
             )}
 
             {/* Price Indicator */}
@@ -29,26 +58,28 @@ export function FoodCard({ food, onAdd }: FoodCardProps) {
                 <Info size={16} />
             </div>
 
-            {/* Circular Food Image */}
-            <div className="relative w-44 h-44 mt-8 mb-6 group-hover:scale-105 transition-transform duration-700">
-                <div className="absolute inset-0 rounded-full border border-white/5 shadow-[0_0_40px_rgba(0,0,0,0.6)]" />
-                <div className="relative w-full h-full rounded-full overflow-hidden bg-neutral-800/50 flex items-center justify-center">
+            {/* Food Image Container */}
+            <motion.div
+                style={{ y: imageY }}
+                className="relative w-40 h-40 sm:w-48 sm:h-48 mb-8"
+            >
+                <div className="absolute inset-0 bg-amber-500/10 rounded-full blur-2xl group-hover:bg-amber-500/20 transition-colors duration-700" />
+                <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-white/5 transition-transform duration-700 group-hover:scale-105 group-hover:rotate-6">
                     {food.imageUrl ? (
-                        <img
+                        <Image
                             src={food.imageUrl}
                             alt={food.name}
-                            className="w-full h-full object-cover grayscale-[10%] group-hover:grayscale-0 transition-all duration-500"
-                            onError={(e) => {
-                                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1589187151003-0dd476a00bd8?w=400&auto=format&fit=crop'; // Subtle tea/spice background fallback
-                            }}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 160px, 192px"
                         />
                     ) : (
-                        <ImageOff className="text-white/5" size={40} />
+                        <div className="w-full h-full bg-neutral-800 flex items-center justify-center">
+                            <ImageOff className="text-white/10" size={32} />
+                        </div>
                     )}
                 </div>
-                {/* Decorative glow */}
-                <div className="absolute inset-0 rounded-full bg-amber-500/0 group-hover:bg-amber-500/5 transition-all duration-700" />
-            </div>
+            </motion.div>
 
             {/* Food Info */}
             <div className="mb-4 z-10 w-full px-2">
@@ -77,6 +108,6 @@ export function FoodCard({ food, onAdd }: FoodCardProps) {
                     Add to Cart
                 </button>
             </div>
-        </div>
+        </motion.div>
     )
 }
