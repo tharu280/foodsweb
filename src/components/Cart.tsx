@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ShoppingCart, X, MessageCircle, Trash2 } from 'lucide-react'
+import { ShoppingCart, X, MessageCircle, Trash2, Minus, Plus } from 'lucide-react'
 import { FoodItem } from '@prisma/client'
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion'
 import { siteConfig } from '@/lib/config'
@@ -22,23 +22,19 @@ export function Cart({ items, onUpdateQuantity, onRemove }: CartProps) {
     const { scrollY } = useScroll()
 
     useMotionValueEvent(scrollY, "change", (latest) => {
-        if (latest > 400) {
-            setShowButton(true)
-        } else {
-            setShowButton(false)
-        }
+        setShowButton(latest > 400)
     })
 
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+    const itemCount = items.reduce((sum, item) => sum + item.quantity, 0)
 
     const handleWhatsAppOrder = () => {
         const phoneNumber = siteConfig.contact.whatsapp
-        let message = `Hi ${siteConfig.name}, I want to order:\n`
+        let message = `Hi ${siteConfig.name}, I'd like to place an order:\n\n`
         items.forEach(item => {
-            message += `${item.quantity}x ${item.name}\n`
+            message += `• ${item.quantity}× ${item.name} — ${siteConfig.currency} ${(item.price * item.quantity).toLocaleString()}\n`
         })
-        message += `Total: ${total} ${siteConfig.currency}`
-
+        message += `\nTotal: ${siteConfig.currency} ${total.toLocaleString()}`
         const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
         window.open(url, '_blank')
     }
@@ -47,120 +43,139 @@ export function Cart({ items, onUpdateQuantity, onRemove }: CartProps) {
 
     return (
         <div className="relative z-[100]">
+            {/* Floating Cart Button */}
             <AnimatePresence>
                 {!isOpen && showButton && (
                     <motion.button
                         key="cart-button"
                         initial={{ scale: 0, opacity: 0, y: 20 }}
-                        animate={{
-                            scale: 1,
-                            opacity: 1,
-                            y: 0,
-                            boxShadow: ["0 0 20px rgba(217,119,6,0.2)", "0 0 60px rgba(217,119,6,0.6)", "0 0 20px rgba(217,119,6,0.2)"]
-                        }}
-                        transition={{
-                            duration: 3,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            boxShadow: {
-                                duration: 3,
-                                repeat: Infinity,
-                                ease: "easeInOut"
-                            },
-                            default: {
-                                duration: 0.3
-                            }
-                        }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0, opacity: 0, y: 20 }}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
+                        transition={{ type: "spring", stiffness: 350, damping: 25 }}
                         onClick={() => setIsOpen(true)}
-                        className="fixed bottom-6 s:bottom-8 right-6 s:right-8 bg-amber-600 text-black p-4 sm:p-5 rounded-full z-[100] border border-amber-500/20 shadow-[0_0_50px_rgba(217,119,6,0.4)]"
+                        className="press-scale fixed bottom-6 right-6 bg-amber-600 text-black p-4 sm:p-5 rounded-full z-[100] shadow-[0_0_40px_rgba(217,119,6,0.45)] border border-amber-500/30 animate-ping-soft"
+                        aria-label="Open cart"
                     >
                         <div className="relative">
-                            <ShoppingCart size={24} className="sm:w-7 sm:h-7" />
+                            <ShoppingCart size={22} className="sm:w-6 sm:h-6" />
                             <motion.span
-                                key={items.reduce((sum, item) => sum + item.quantity, 0)}
-                                initial={{ scale: 1.5, backgroundColor: "#fff" }}
-                                animate={{ scale: 1, backgroundColor: "#fff" }}
-                                className="absolute -top-5 -right-5 bg-white text-black text-[10px] font-black h-5 w-5 sm:h-6 sm:w-6 rounded-full flex items-center justify-center border-2 border-amber-600 shadow-xl"
+                                key={itemCount}
+                                initial={{ scale: 1.4 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 400 }}
+                                className="absolute -top-5 -right-5 bg-white text-black text-[9px] font-black h-5 w-5 sm:h-[22px] sm:w-[22px] rounded-full flex items-center justify-center border-2 border-amber-600 shadow-lg"
                             >
-                                {items.reduce((sum, item) => sum + item.quantity, 0)}
+                                {itemCount}
                             </motion.span>
                         </div>
                     </motion.button>
                 )}
             </AnimatePresence>
 
+            {/* Cart Drawer */}
             <AnimatePresence>
                 {isOpen && (
-                    <div className="fixed inset-0 z-[110] flex justify-end overflow-hidden">
+                    <div className="fixed inset-0 z-[110] flex justify-end">
                         {/* Backdrop */}
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            className="absolute inset-0 bg-black/80 backdrop-blur-md"
+                            transition={{ duration: 0.25 }}
+                            className="absolute inset-0 bg-black/75 backdrop-blur-sm"
                             onClick={() => setIsOpen(false)}
                         />
 
-                        {/* Drawer */}
+                        {/* Panel */}
                         <motion.div
                             initial={{ x: "100%" }}
                             animate={{ x: 0 }}
                             exit={{ x: "100%" }}
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="bg-[#0a0a0a] w-full max-w-md h-[100dvh] flex flex-col relative border-l border-white/5 shadow-[-20px_0_50px_rgba(0,0,0,0.5)]"
+                            transition={{ type: "spring", damping: 28, stiffness: 240 }}
+                            className="relative w-full max-w-[420px] h-[100dvh] flex flex-col bg-[#0c0c0c] border-l border-white/[0.06] shadow-[-30px_0_60px_rgba(0,0,0,0.6)]"
                         >
-                            <div className="p-6 sm:p-8 border-b border-white/5 flex justify-between items-center bg-black/40 backdrop-blur-xl">
+                            {/* Ambient glow in panel */}
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-amber-600/5 rounded-full blur-3xl pointer-events-none" />
+
+                            {/* Header */}
+                            <div className="relative px-6 py-5 sm:px-8 sm:py-6 border-b border-white/[0.06] flex justify-between items-start bg-black/30 backdrop-blur-xl flex-shrink-0">
                                 <div>
-                                    <h2 className="text-2xl sm:text-3xl font-bold text-white font-serif tracking-tight">Your <span className="italic text-amber-500">Order</span></h2>
-                                    <p className="text-white/40 text-[10px] uppercase font-bold tracking-[0.2em] mt-1">Authentic Selection ({items.length} items)</p>
+                                    <p className="text-[9px] uppercase font-black tracking-[0.35em] text-amber-600/70 mb-1">
+                                        {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                                    </p>
+                                    <h2 className="text-2xl sm:text-3xl font-bold text-white font-serif tracking-tight">
+                                        Your <span className="italic text-amber-500">Order</span>
+                                    </h2>
                                 </div>
-                                <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors group">
-                                    <X size={24} className="text-white/40 group-hover:text-white transition-colors" />
+                                <button
+                                    onClick={() => setIsOpen(false)}
+                                    className="press-scale p-2 rounded-xl border border-white/5 bg-white/[0.03] text-white/40 transition-colors mt-1"
+                                    aria-label="Close cart"
+                                >
+                                    <X size={20} />
                                 </button>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto p-6 sm:p-8 space-y-8 scrollbar-hide">
+                            {/* Item List */}
+                            <div className="flex-1 overflow-y-auto px-6 sm:px-8 py-6 space-y-6 scrollbar-hide">
                                 <AnimatePresence initial={false}>
                                     {items.map((item, index) => (
                                         <motion.div
                                             key={item.id}
-                                            initial={{ opacity: 0, x: 20 }}
+                                            initial={{ opacity: 0, x: 30 }}
                                             animate={{ opacity: 1, x: 0 }}
-                                            exit={{ opacity: 0, x: -20 }}
-                                            transition={{ delay: index * 0.05 }}
-                                            className="flex gap-4 sm:gap-6 items-center group"
+                                            exit={{ opacity: 0, x: -20, height: 0, marginBottom: 0 }}
+                                            transition={{ delay: index * 0.04, duration: 0.3 }}
+                                            className="flex gap-4 items-start"
                                         >
-                                            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-neutral-900 rounded-full overflow-hidden relative flex-shrink-0 border border-white/5 shadow-2xl">
-                                                <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110" />
+                                            {/* Image */}
+                                            <div className="w-16 h-16 sm:w-[72px] sm:h-[72px] rounded-xl overflow-hidden flex-shrink-0 border border-white/[0.06] bg-neutral-900">
+                                                {item.imageUrl ? (
+                                                    <img
+                                                        src={item.imageUrl}
+                                                        alt={item.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full shimmer" />
+                                                )}
                                             </div>
-                                            <div className="flex-1 min-w-0">
-                                                <h4 className="font-bold text-white mb-0.5 sm:mb-1 font-serif text-sm sm:text-base truncate">{item.name}</h4>
-                                                <p className="text-amber-500 font-bold text-xs sm:text-sm tabular-nums">LKR {item.price}</p>
 
-                                                <div className="flex items-center gap-3 sm:gap-4 mt-3 sm:mt-4">
-                                                    <div className="flex items-center gap-1 bg-white/5 rounded-lg p-1 border border-white/5">
+                                            {/* Details */}
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="font-bold text-white font-serif text-sm sm:text-base truncate leading-tight mb-0.5">
+                                                    {item.name}
+                                                </h4>
+                                                <p className="text-amber-500 font-bold text-xs tabular-nums mb-3">
+                                                    {siteConfig.currency} {(item.price * item.quantity).toLocaleString()}
+                                                </p>
+
+                                                <div className="flex items-center gap-3">
+                                                    {/* Quantity stepper */}
+                                                    <div className="flex items-center gap-0.5 bg-white/[0.04] rounded-lg border border-white/[0.06] p-0.5">
                                                         <button
                                                             onClick={() => onUpdateQuantity(item.id, -1)}
-                                                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-md hover:bg-white/10 text-white transition-colors flex items-center justify-center font-bold"
+                                                            className="press-scale w-7 h-7 rounded-md flex items-center justify-center text-white/50 active:bg-white/10 transition-colors"
                                                         >
-                                                            -
+                                                            <Minus size={12} strokeWidth={3} />
                                                         </button>
-                                                        <span className="font-bold text-[10px] sm:text-xs w-6 sm:w-8 text-center text-white tabular-nums">{item.quantity}</span>
+                                                        <span className="text-white font-black text-xs w-7 text-center tabular-nums">
+                                                            {item.quantity}
+                                                        </span>
                                                         <button
                                                             onClick={() => onUpdateQuantity(item.id, 1)}
-                                                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-md hover:bg-white/10 text-white transition-colors flex items-center justify-center font-bold"
+                                                            className="press-scale w-7 h-7 rounded-md flex items-center justify-center text-white/50 active:bg-white/10 transition-colors"
                                                         >
-                                                            +
+                                                            <Plus size={12} strokeWidth={3} />
                                                         </button>
                                                     </div>
+
+                                                    {/* Remove */}
                                                     <button
                                                         onClick={() => onRemove(item.id)}
-                                                        className="text-white/20 hover:text-red-500 transition-colors p-2"
+                                                        className="press-scale p-1.5 rounded-lg text-white/20 active:text-red-500 transition-colors"
                                                     >
-                                                        <Trash2 size={14} className="sm:w-4 sm:h-4" />
+                                                        <Trash2 size={14} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -169,27 +184,35 @@ export function Cart({ items, onUpdateQuantity, onRemove }: CartProps) {
                                 </AnimatePresence>
                             </div>
 
-                            <div className="p-6 sm:p-8 border-t border-white/5 bg-black/40 backdrop-blur-3xl">
-                                <div className="space-y-4 mb-6 sm:mb-8">
-                                    <div className="flex justify-between text-white/40 text-[10px] uppercase font-bold tracking-widest">
+                            {/* Footer — Total + CTA */}
+                            <div className="px-6 sm:px-8 py-6 border-t border-white/[0.06] bg-black/30 backdrop-blur-3xl flex-shrink-0 relative">
+                                {/* Total */}
+                                <div className="space-y-3 mb-6">
+                                    <div className="flex justify-between text-white/30 text-[10px] uppercase font-black tracking-widest">
                                         <span>Subtotal</span>
-                                        <span className="tabular-nums">LKR {total.toLocaleString()}</span>
+                                        <span className="tabular-nums">{siteConfig.currency} {total.toLocaleString()}</span>
                                     </div>
-                                    <div className="flex justify-between items-center pt-4 sm:pt-6 border-t border-white/5 mt-4 sm:mt-6">
-                                        <span className="font-bold text-lg sm:text-xl text-white font-serif tracking-tight">Order Total</span>
-                                        <span className="font-bold text-xl sm:text-2xl text-amber-500 font-serif tabular-nums">LKR {total.toLocaleString()}</span>
+                                    <div className="flex justify-between items-baseline pt-3 border-t border-white/[0.06]">
+                                        <span className="font-bold text-white text-lg font-serif">Total</span>
+                                        <span className="font-bold text-2xl text-amber-500 font-serif tabular-nums">
+                                            {siteConfig.currency} {total.toLocaleString()}
+                                        </span>
                                     </div>
                                 </div>
+
+                                {/* WhatsApp CTA */}
                                 <motion.button
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
+                                    whileTap={{ scale: 0.97 }}
                                     onClick={handleWhatsAppOrder}
-                                    className="w-full bg-amber-600 hover:bg-amber-500 text-black py-4 px-6 rounded-xl font-black uppercase text-[10px] sm:text-xs tracking-[0.2em] flex items-center justify-center gap-3 transition-all shadow-[0_10px_30px_rgba(217,119,6,0.2)]"
+                                    className="w-full bg-amber-600 active:bg-amber-500 text-black py-4 px-6 rounded-xl font-black uppercase text-[10px] tracking-[0.2em] flex items-center justify-center gap-3 transition-colors shadow-[0_10px_40px_rgba(217,119,6,0.25)]"
                                 >
                                     <MessageCircle size={18} />
-                                    Complete via WhatsApp
+                                    Order via WhatsApp
                                 </motion.button>
-                                <p className="text-center text-white/20 text-[8px] uppercase font-bold tracking-widest mt-6">Safe • Authentic • Sri Lankan</p>
+
+                                <p className="text-center text-white/15 text-[8px] uppercase font-black tracking-[0.3em] mt-4">
+                                    Fresh · Authentic · Sri Lankan
+                                </p>
                             </div>
                         </motion.div>
                     </div>

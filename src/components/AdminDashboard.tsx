@@ -40,7 +40,22 @@ export function AdminDashboard({ foods }: { foods: FoodItem[] }) {
                     }} id="add-form" className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input name="name" placeholder="Name" required className="border p-2 rounded focus:ring-2 focus:ring-orange-500 outline-none" />
                         <input name="price" type="number" step="0.01" placeholder="Price (LKR)" required className="border p-2 rounded focus:ring-2 focus:ring-orange-500 outline-none" />
-                        <input name="imageUrl" placeholder="Image URL" required className="border p-2 rounded focus:ring-2 focus:ring-orange-500 outline-none" />
+
+                        <select name="dayOfWeek" required className="border p-2 rounded focus:ring-2 focus:ring-orange-500 outline-none bg-white">
+                            <option value="MONDAY">Monday</option>
+                            <option value="TUESDAY">Tuesday</option>
+                            <option value="WEDNESDAY">Wednesday</option>
+                            <option value="THURSDAY">Thursday</option>
+                            <option value="FRIDAY">Friday</option>
+                            <option value="SATURDAY">Saturday</option>
+                        </select>
+
+                        <select name="mealType" required className="border p-2 rounded focus:ring-2 focus:ring-orange-500 outline-none bg-white">
+                            <option value="LUNCH">Lunch</option>
+                            <option value="DINNER">Dinner</option>
+                        </select>
+
+                        <input name="imageUrl" placeholder="Image URL" required className="border p-2 rounded md:col-span-2 focus:ring-2 focus:ring-orange-500 outline-none" />
                         <input name="description" placeholder="Description" required className="border p-2 rounded md:col-span-2 focus:ring-2 focus:ring-orange-500 outline-none" />
                         <button type="submit" className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 md:col-span-2 flex items-center justify-center gap-2 font-bold transition-colors">
                             <Plus size={20} /> Add Item
@@ -56,7 +71,7 @@ export function AdminDashboard({ foods }: { foods: FoodItem[] }) {
                             <thead className="bg-gray-50 border-b">
                                 <tr>
                                     <th className="p-4 font-semibold text-gray-600">Image</th>
-                                    <th className="p-4 font-semibold text-gray-600">Name</th>
+                                    <th className="p-4 font-semibold text-gray-600">Info & Schedule</th>
                                     <th className="p-4 font-semibold text-gray-600">Price</th>
                                     <th className="p-4 font-semibold text-gray-600">Status</th>
                                     <th className="p-4 font-semibold text-gray-600">Actions</th>
@@ -76,6 +91,20 @@ export function AdminDashboard({ foods }: { foods: FoodItem[] }) {
                                                 }} className="flex flex-col gap-2">
                                                     <input name="name" defaultValue={food.name} className="border p-1 rounded text-gray-900" />
                                                     <input name="description" defaultValue={food.description} className="border p-1 rounded text-gray-900" />
+                                                    <div className="flex gap-2">
+                                                        <select name="dayOfWeek" defaultValue={food.dayOfWeek} className="border p-1 rounded text-gray-900 flex-1">
+                                                            <option value="MONDAY">Monday</option>
+                                                            <option value="TUESDAY">Tuesday</option>
+                                                            <option value="WEDNESDAY">Wednesday</option>
+                                                            <option value="THURSDAY">Thursday</option>
+                                                            <option value="FRIDAY">Friday</option>
+                                                            <option value="SATURDAY">Saturday</option>
+                                                        </select>
+                                                        <select name="mealType" defaultValue={food.mealType} className="border p-1 rounded text-gray-900 flex-1">
+                                                            <option value="LUNCH">Lunch</option>
+                                                            <option value="DINNER">Dinner</option>
+                                                        </select>
+                                                    </div>
                                                     <input name="imageUrl" defaultValue={food.imageUrl} className="border p-1 rounded text-gray-900" />
                                                     <input name="price" type="number" defaultValue={food.price} className="border p-1 rounded text-gray-900" />
                                                     <div className="flex gap-2">
@@ -86,6 +115,10 @@ export function AdminDashboard({ foods }: { foods: FoodItem[] }) {
                                             ) : (
                                                 <div>
                                                     <div className="font-bold text-gray-800">{food.name}</div>
+                                                    <div className="flex items-center gap-2 mb-1">
+                                                        <span className="text-xs font-semibold px-2 py-0.5 bg-gray-100 rounded text-gray-700">{food.dayOfWeek}</span>
+                                                        <span className="text-xs font-semibold px-2 py-0.5 bg-orange-100 text-orange-800 rounded">{food.mealType}</span>
+                                                    </div>
                                                     <div className="text-sm text-gray-500 truncate max-w-xs">{food.description}</div>
                                                 </div>
                                             )}
@@ -127,6 +160,18 @@ export function AdminDashboard({ foods }: { foods: FoodItem[] }) {
                                         }} className="flex flex-col gap-3">
                                             <input name="name" defaultValue={food.name} placeholder="Name" className="border p-2 rounded text-gray-900" />
                                             <input name="price" type="number" defaultValue={food.price} placeholder="Price" className="border p-2 rounded text-gray-900" />
+                                            <select name="dayOfWeek" defaultValue={food.dayOfWeek} className="border p-2 rounded text-gray-900 bg-white">
+                                                <option value="MONDAY">Monday</option>
+                                                <option value="TUESDAY">Tuesday</option>
+                                                <option value="WEDNESDAY">Wednesday</option>
+                                                <option value="THURSDAY">Thursday</option>
+                                                <option value="FRIDAY">Friday</option>
+                                                <option value="SATURDAY">Saturday</option>
+                                            </select>
+                                            <select name="mealType" defaultValue={food.mealType} className="border p-2 rounded text-gray-900 bg-white">
+                                                <option value="LUNCH">Lunch</option>
+                                                <option value="DINNER">Dinner</option>
+                                            </select>
                                             <input name="imageUrl" defaultValue={food.imageUrl} placeholder="Image URL" className="border p-2 rounded text-gray-900" />
                                             <textarea name="description" defaultValue={food.description} placeholder="Description" className="border p-2 rounded text-gray-900" rows={3} />
                                             <div className="flex gap-2 pt-2">
@@ -149,6 +194,10 @@ export function AdminDashboard({ foods }: { foods: FoodItem[] }) {
                                             </div>
                                         </div>
                                         <div className="p-4">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="text-xs font-semibold px-2 py-0.5 bg-gray-100 rounded text-gray-700">{food.dayOfWeek}</span>
+                                                <span className="text-xs font-semibold px-2 py-0.5 bg-orange-100 text-orange-800 rounded">{food.mealType}</span>
+                                            </div>
                                             <div className="flex justify-between items-start mb-2">
                                                 <h3 className="font-bold text-lg text-gray-900">{food.name}</h3>
                                                 <span className="font-serif font-bold text-orange-600">LKR {food.price}</span>

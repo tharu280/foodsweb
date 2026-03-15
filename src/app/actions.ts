@@ -33,6 +33,8 @@ export async function addFood(formData: FormData) {
     const description = formData.get('description') as string
     const price = parseFloat(formData.get('price') as string)
     const imageUrl = formData.get('imageUrl') as string
+    const dayOfWeek = formData.get('dayOfWeek') as any
+    const mealType = formData.get('mealType') as any
 
     await prisma.foodItem.create({
         data: {
@@ -41,6 +43,8 @@ export async function addFood(formData: FormData) {
             price,
             imageUrl,
             isAvailable: true,
+            dayOfWeek: dayOfWeek || 'MONDAY',
+            mealType: mealType || 'LUNCH',
         },
     })
     revalidatePath('/')
@@ -52,15 +56,22 @@ export async function updateFood(id: number, formData: FormData) {
     const description = formData.get('description') as string
     const price = parseFloat(formData.get('price') as string)
     const imageUrl = formData.get('imageUrl') as string
+    const dayOfWeek = formData.get('dayOfWeek') as any
+    const mealType = formData.get('mealType') as any
+
+    const dataToUpdate: any = {
+        name,
+        description,
+        price,
+        imageUrl,
+    }
+
+    if (dayOfWeek) dataToUpdate.dayOfWeek = dayOfWeek
+    if (mealType) dataToUpdate.mealType = mealType
 
     await prisma.foodItem.update({
         where: { id },
-        data: {
-            name,
-            description,
-            price,
-            imageUrl,
-        },
+        data: dataToUpdate,
     })
     revalidatePath('/')
     revalidatePath('/admin')
@@ -94,46 +105,193 @@ export async function seedDatabase() {
 
     const foods = [
         {
-            name: 'Kiribath Piece (කිරි බත් කෑල්ලක්)',
-            description: 'Creamy milk rice prepared with premium white raw rice and thick coconut milk. A staple for every Sri Lankan celebration.',
-            price: 60,
-            imageUrl: '/images/kiribath.png',
-            isAvailable: true,
-        },
-        {
-            name: 'Mun Kavum (මුං කැවුම්)',
-            description: 'Traditional deep-fried sweet made from mung bean flour and rich Kithul treacle. Moist, sweet, and authentic.',
-            price: 50,
-            imageUrl: '/images/kavum.png',
-            isAvailable: true,
-        },
-        {
-            name: 'Traditional Kokis (කොකිස්)',
-            description: 'Intricately designed, crispy rosette cookies made with fresh coconut milk and rice flour. The ultimate festive crunch.',
-            price: 20,
-            imageUrl: '/images/kokis.png',
-            isAvailable: true,
-        },
-        {
-            name: 'Artisan Aluwa (අලුවා)',
-            description: 'Diamond-shaped traditional sweet made from roasted rice flour, delicately flavored with cardamom and treacle.',
-            price: 40,
+            name: 'Monday Lunch - Egg Dish',
+            description: 'Egg Dish (Regular: Rs. 400 / Large: Rs. 500) served with Cabbage, Carrot, Cucumber salad, and Baked potato.',
+            price: 400,
             imageUrl: '/images/hero.png',
             isAvailable: true,
+            dayOfWeek: 'MONDAY' as any,
+            mealType: 'LUNCH' as any,
         },
         {
-            name: 'Pol Toffee (පොල් ටොෆී)',
-            description: 'Classic Sri Lankan coconut toffee squares. Sweet, chewy, and made with freshly scraped coconut.',
-            price: 20,
-            imageUrl: '/images/pol_toffee.png',
+            name: 'Monday Lunch - Chicken Dish',
+            description: 'Chicken Dish (Regular: Rs. 500 / Large: Rs. 600) served with Cabbage, Carrot, Cucumber salad, and Baked potato.',
+            price: 500,
+            imageUrl: '/images/hero.png',
             isAvailable: true,
+            dayOfWeek: 'MONDAY' as any,
+            mealType: 'LUNCH' as any,
         },
         {
-            name: 'Spicy Fish Cutlet (කට්ලට්)',
-            description: 'Savory, spicy fish and potato spheres, double-breaded and deep-fried to golden perfection.',
-            price: 50,
-            imageUrl: '/images/cutlets.png',
+            name: 'Monday Lunch - Beef Dish',
+            description: 'Beef Dish (Regular: Rs. 700 / Large: Rs. 800) served with Cabbage, Carrot, Cucumber salad, and Baked potato.',
+            price: 700,
+            imageUrl: '/images/hero.png',
             isAvailable: true,
+            dayOfWeek: 'MONDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Monday Dinner - Egg Dish',
+            description: 'Egg Dish served with Green gram salad and Sweet potato.',
+            price: 500,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'MONDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Monday Dinner - Chicken Dish',
+            description: 'Chicken Dish served with Green gram salad and Sweet potato.',
+            price: 600,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'MONDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Monday Dinner - Beef Dish',
+            description: 'Beef Dish served with Green gram salad and Sweet potato.',
+            price: 700,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'MONDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Tuesday Lunch - Egg Dish',
+            description: 'Egg Dish (Regular: Rs. 400 / Large: Rs. 500) served with Boiled vegetables and Baked corn.',
+            price: 400,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'TUESDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Tuesday Lunch - Chicken Dish',
+            description: 'Chicken Dish (Regular: Rs. 500 / Large: Rs. 600) served with Boiled vegetables and Baked corn.',
+            price: 500,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'TUESDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Tuesday Lunch - Beef Dish',
+            description: 'Beef Dish (Regular: Rs. 700 / Large: Rs. 800) served with Boiled vegetables and Baked corn.',
+            price: 700,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'TUESDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Tuesday Dinner - Egg Dish',
+            description: 'Egg Dish served as a Veggie mini bread pizza with Potato wedges.',
+            price: 500,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'TUESDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Tuesday Dinner - Chicken Dish',
+            description: 'Chicken Dish served as a Veggie mini bread pizza with Potato wedges.',
+            price: 600,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'TUESDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Tuesday Dinner - Beef Dish',
+            description: 'Beef Dish served as a Veggie mini bread pizza with Potato wedges.',
+            price: 700,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'TUESDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Wednesday Lunch - Egg Dish',
+            description: 'Egg Dish (Regular: Rs. 400 / Large: Rs. 500) served with Green peas salad and Smashed potato.',
+            price: 400,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'WEDNESDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Wednesday Lunch - Chicken Dish',
+            description: 'Chicken Dish (Regular: Rs. 500 / Large: Rs. 600) served with Green peas salad and Smashed potato.',
+            price: 500,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'WEDNESDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Wednesday Lunch - Beef Dish',
+            description: 'Beef Dish (Regular: Rs. 700 / Large: Rs. 800) served with Green peas salad and Smashed potato.',
+            price: 700,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'WEDNESDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Wednesday Dinner - Egg Dish',
+            description: 'Egg Dish served with Vegetables salad and Basmathi rice.',
+            price: 500,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'WEDNESDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Wednesday Dinner - Chicken Dish',
+            description: 'Chicken Dish served with Vegetables salad and Basmathi rice.',
+            price: 600,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'WEDNESDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Wednesday Dinner - Beef Dish',
+            description: 'Beef Dish served with Vegetables salad and Basmathi rice.',
+            price: 700,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'WEDNESDAY' as any,
+            mealType: 'DINNER' as any,
+        },
+        {
+            name: 'Thursday Lunch - Egg Dish',
+            description: 'Egg Dish (Regular: Rs. 400 / Large: Rs. 500) served with Fried mushrooms, Cauliflower, Garlic, and Beans.',
+            price: 400,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'THURSDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Thursday Lunch - Chicken Dish',
+            description: 'Chicken Dish (Regular: Rs. 500 / Large: Rs. 600) served with Fried mushrooms, Cauliflower, Garlic, and Beans.',
+            price: 500,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'THURSDAY' as any,
+            mealType: 'LUNCH' as any,
+        },
+        {
+            name: 'Thursday Lunch - Beef Dish',
+            description: 'Beef Dish (Regular: Rs. 700 / Large: Rs. 800) served with Fried mushrooms, Cauliflower, Garlic, and Beans.',
+            price: 700,
+            imageUrl: '/images/hero.png',
+            isAvailable: true,
+            dayOfWeek: 'THURSDAY' as any,
+            mealType: 'LUNCH' as any,
         }
     ]
 

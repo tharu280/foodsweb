@@ -9,12 +9,28 @@ datasource db {
 }
 
 model FoodItem {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   description String
   price       Float
   imageUrl    String
-  isAvailable Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isAvailable Boolean   @default(true)
+  dayOfWeek   DayOfWeek @default(MONDAY)
+  mealType    MealType  @default(LUNCH)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+}
+
+enum MealType {
+  LUNCH
+  DINNER
 }

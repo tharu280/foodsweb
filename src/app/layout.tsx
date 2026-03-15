@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { siteConfig } from "@/lib/config";
 
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
 
 export const metadata: Metadata = {
-  title: "Kitchen Lanka",
-  description: "Authentic Sri Lankan sweets and meals delivered to your doorstep",
+  title: siteConfig.meta.title,
+  description: siteConfig.meta.description,
 };
 
 export default function RootLayout({
