@@ -98,7 +98,7 @@ export function Cart({ items, onUpdateQuantity, onRemove }: CartProps) {
                             <div className="absolute top-0 right-0 w-64 h-64 bg-amber-600/5 rounded-full blur-3xl pointer-events-none" />
 
                             {/* Header */}
-                            <div className="relative px-6 py-5 sm:px-8 sm:py-6 border-b border-white/[0.06] flex justify-between items-start bg-black/30 backdrop-blur-xl flex-shrink-0">
+                            <div className="relative px-6 py-5 sm:px-8 sm:py-6 border-b border-white/[0.06] flex justify-between items-start bg-black/80 backdrop-blur-sm sm:backdrop-blur-md sm:bg-black/30 flex-shrink-0 z-10">
                                 <div>
                                     <p className="text-[9px] uppercase font-black tracking-[0.35em] text-amber-600/70 mb-1">
                                         {itemCount} {itemCount === 1 ? 'item' : 'items'}
@@ -185,7 +185,7 @@ export function Cart({ items, onUpdateQuantity, onRemove }: CartProps) {
                             </div>
 
                             {/* Footer — Total + CTA */}
-                            <div className="px-6 sm:px-8 py-6 border-t border-white/[0.06] bg-black/30 backdrop-blur-3xl flex-shrink-0 relative">
+                            <div className="relative px-6 py-6 sm:px-8 sm:py-8 border-t border-white/[0.06] bg-black/80 backdrop-blur-sm sm:backdrop-blur-md sm:bg-black/30 flex-shrink-0 z-10">
                                 {/* Total */}
                                 <div className="space-y-3 mb-6">
                                     <div className="flex justify-between text-white/30 text-[10px] uppercase font-black tracking-widest">

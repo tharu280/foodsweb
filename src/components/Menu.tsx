@@ -106,7 +106,7 @@ export function Menu({ initialFoods }: MenuProps) {
             {/* ── Header ── */}
             <motion.header
                 style={{ backgroundColor: headerBg, borderBottomColor: headerBorder }}
-                className="fixed top-0 left-0 right-0 z-50 h-16 sm:h-20 border-b backdrop-blur-xl"
+                className="fixed top-0 left-0 right-0 z-50 h-16 sm:h-20 border-b bg-black/80 backdrop-blur-sm sm:bg-transparent sm:backdrop-blur-md"
             >
                 <div className="container mx-auto px-5 sm:px-8 h-full flex items-center justify-between">
                     {/* Left: Logo + Brand */}
