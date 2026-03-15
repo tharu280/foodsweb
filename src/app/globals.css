@@ -119,14 +119,14 @@ body {
 
 /* ── Animation Utility Classes ────────────────────────────────────────────── */
 @layer utilities {
-  .animate-slide-in     { animation: slideIn 0.35s ease-out forwards; }
-  .animate-float        { animation: float-gentle 6s ease-in-out infinite; }
-  .animate-orb-a        { animation: orb-drift-a 18s ease-in-out infinite, orb-pulse 8s ease-in-out infinite; }
-  .animate-orb-b        { animation: orb-drift-b 22s ease-in-out infinite, orb-pulse 10s ease-in-out infinite 2s; }
-  .animate-orb-c        { animation: orb-drift-c 30s ease-in-out infinite, orb-pulse 12s ease-in-out infinite 1s; }
-  .animate-grain        { animation: grain 0.4s steps(1) infinite; }
-  .animate-spin-slow    { animation: spin-slow 60s linear infinite; }
-  .animate-ping-soft    { animation: ping-soft 2s ease-in-out infinite; }
+  .animate-slide-in     { animation: slideIn 0.35s ease-out forwards; will-change: transform; }
+  .animate-float        { animation: float-gentle 6s ease-in-out infinite; will-change: transform; }
+  .animate-orb-a        { animation: orb-drift-a 18s ease-in-out infinite, orb-pulse 8s ease-in-out infinite; will-change: transform, opacity; }
+  .animate-orb-b        { animation: orb-drift-b 22s ease-in-out infinite, orb-pulse 10s ease-in-out infinite 2s; will-change: transform, opacity; }
+  .animate-orb-c        { animation: orb-drift-c 30s ease-in-out infinite, orb-pulse 12s ease-in-out infinite 1s; will-change: transform, opacity; }
+  .animate-grain        { animation: grain 0.4s steps(1) infinite; will-change: transform; transform: translateZ(0); }
+  .animate-spin-slow    { animation: spin-slow 60s linear infinite; will-change: transform; }
+  .animate-ping-soft    { animation: ping-soft 2s ease-in-out infinite; will-change: transform, opacity; }
 
   .text-glow {
     text-shadow: 0 0 20px rgba(217, 119, 6, 0.35);
